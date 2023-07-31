@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import BookForm from './BookForm/BookForm';
 import BookList from './BookList/BookList';
@@ -6,85 +6,103 @@ import Modal from './Modal/Modal';
 
 import booksData from '../books.json';
 
-const books = booksData.books;
+const booksInitalData = booksData.books;
 
-export class App extends React.Component {
-  state = {
-    books: books,
-    // [{ id: 1 }, { id: 2 }, { id: 3 }, {id: 4}]
-    // [{ id: 1 }, { id: 2 }, { id: 3 }, {id: 4}, {id: 5}]
-    modal: { isOpen: false, visibleData: null },
+export const App = () => {
+  // state = {
+  //   books: books,
+  //   modal: { isOpen: false, visibleData: null },
+  // };
+  const [books, setBooks] = useState(null);
+  const [modal, setModal] = useState({ isOpen: false, visibleData: null });
+
+  const onRemoveBook = bookId => {
+    // this.setState({
+    //   books: this.state.books.filter(book => book.id !== bookId), // [{ id: 1 }, { id: 3 }]
+    // });
+    setBooks(books.filter(book => book.id !== bookId));
   };
 
-  onRemoveBook = bookId => {
-    this.setState({
-      books: this.state.books.filter(book => book.id !== bookId), // [{ id: 1 }, { id: 3 }]
-    });
-  };
-
-  onAddBook = bookData => {
+  const onAddBook = bookData => {
     const finalBook = {
       ...bookData,
       id: (Math.random() * 10).toString(),
     };
 
-    this.setState({
-      books: [finalBook, ...this.state.books],
+    // this.setState({
+    //   books: [finalBook, ...this.state.books],
+    // });
+    setBooks([finalBook, ...books]);
+  };
+
+  const onOpenModal = data => {
+    // this.setState({
+    //   modal: {
+    //     isOpen: true,
+    //     visibleData: data,
+    //   },
+    // });
+    setModal({
+      isOpen: true,
+      visibleData: data,
     });
   };
 
-  onOpenModal = data => {
-    this.setState({
-      modal: {
-        isOpen: true,
-        visibleData: data,
-      },
+  const onCloseModal = () => {
+    // this.setState({
+    //   modal: {
+    //     isOpen: false,
+    //     visibleData: null,
+    //   },
+    // });
+    setModal({
+      isOpen: false,
+      visibleData: null,
     });
   };
 
-  onCloseModal = () => {
-    this.setState({
-      modal: {
-        isOpen: false,
-        visibleData: null,
-      },
-    });
-  };
+  // componentDidMount() {
+  //   const stringifiedBooks = localStorage.getItem('books');
+  //   const books = JSON.parse(stringifiedBooks) ?? [];
 
-  componentDidMount() {
+  //   this.setState({ books });
+  // }
+
+  useEffect(() => {
     const stringifiedBooks = localStorage.getItem('books');
-    const books = JSON.parse(stringifiedBooks) ?? [];
+    const parsedBooks = JSON.parse(stringifiedBooks) ?? [];
 
-    this.setState({ books });
-  }
+    setBooks(parsedBooks);
+  }, []);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.modal.isOpen !== this.state.modal.isOpen) {
-      console.log('МИ ВІДКРИЛИ АБО ЗАКРИЛИ МОДАЛКУ');
-    }
+  useEffect(() => {
+    if (books === null) return;
 
-    if (prevState.books.length !== this.state.books.length) {
-      const stringifiedBooks = JSON.stringify(this.state.books);
-      localStorage.setItem('books', stringifiedBooks);
-    }
-  }
+    console.log('Books has changed');
+    const stringifiedBooks = JSON.stringify(books);
+    localStorage.setItem('books', stringifiedBooks);
+  }, [books]);
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevState.modal.isOpen !== this.state.modal.isOpen) {
+  //     console.log('МИ ВІДКРИЛИ АБО ЗАКРИЛИ МОДАЛКУ');
+  //   }
+  // if (prevState.books !== this.state.books) {
+  //   const stringifiedBooks = JSON.stringify(this.state.books);
+  //   localStorage.setItem('books', stringifiedBooks);
+  // }
+  // }
 
-  render() {
-    return (
-      <div>
-        {this.state.modal.isOpen && (
-          <Modal
-            onCloseModal={this.onCloseModal}
-            visibleData={this.state.modal.visibleData}
-          />
-        )}
-        <BookForm title="BookForm" onAddBook={this.onAddBook} />
-        <BookList
-          onOpenModal={this.onOpenModal}
-          onRemoveBook={this.onRemoveBook}
-          books={this.state.books}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {modal.isOpen && (
+        <Modal onCloseModal={onCloseModal} visibleData={modal.visibleData} />
+      )}
+      <BookForm title="BookForm" onAddBook={onAddBook} />
+      <BookList
+        onOpenModal={onOpenModal}
+        onRemoveBook={onRemoveBook}
+        books={books}
+      />
+    </div>
+  );
+};

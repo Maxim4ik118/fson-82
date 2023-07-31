@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 function BookList({ books, onRemoveBook, onOpenModal }) {
   return (
     <ul>
-      {books.map(book => (
+      {books !== null && books.map(book => (
         <li key={book.id}>
           <button onClick={() => onRemoveBook(book.id)}>&times;</button>
           <button onClick={() => onOpenModal(book)}>
@@ -33,7 +33,7 @@ BookList.propTypes = {
       genre: PropTypes.string.isRequired,
       favourite: PropTypes.bool.isRequired,
     })
-  ).isRequired,
+  ),
 };
 
 export default BookList;
