@@ -1,12 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { StyledModal, StyledOverlay } from './styled';
+// import { PostsContext } from 'context/PostsContextProvider';
 
 // а чому ми не можем залишити просто import react from …, а потрібно окремо добавити в {}?
 
+/* Для чого використовуємо Рефи?
+  1. Для інтеграції з ДОМ біблотеками.
+  2. Щоб мати доступ до ДОМ елементів на сторінці.
+  3. Щоб робити Відео та Аудіо плеєри.
+  4. Коли нам потрібно зберігати змінну в компоненті, з відсутньою реактивністю.
+
+  x400Re231#23 -> ['Earth', "Jupiter"]
+  x400Re231#24 -> ""
+  x400Re231#25 -> ['Earth', "Jupiter"]
+*/
+
 const Modal = ({ visibleData, onCloseModal }) => {
   const [dataType, setDataType] = useState('emails'); // "emails" | "users"
+  // const { showNotificationMessage, setShowNotificationMessage } =
+  //   useContext(PostsContext);
 
   const handleOverlayClick = event => {
     if (event.currentTarget === event.target) {
@@ -28,17 +42,14 @@ const Modal = ({ visibleData, onCloseModal }) => {
     };
   }, [onCloseModal]); // componentDidMount
 
+  const firstRender = useRef(true); // firstRender.current = true
+
   useEffect(() => {
-    console.log("Current dataType: ", dataType);
-  }, [dataType]) // componentDidMount + componentDidUpdate
+    if (firstRender.current === true)
+      return () => (firstRender.current = false);
 
-  // componentDidMount() {
-  //   window.addEventListener('keydown', this.handleKeyDown);
-  // }
-
-  // componentWillUnmount() {
-  //   window.removeEventListener('keydown', this.handleKeyDown);
-  // }
+    console.log('Current dataType: ', dataType);
+  }, [dataType]); // componentDidMount + componentDidUpdate
 
   return (
     <StyledOverlay onClick={handleOverlayClick}>
@@ -48,7 +59,9 @@ const Modal = ({ visibleData, onCloseModal }) => {
         <div>
           <button
             className={`tab-btn ${dataType === 'emails' ? 'active' : ''}`}
-            onClick={() => setDataType('emails')}
+            onClick={() => {
+              setDataType('emails');
+            }}
             type="button"
           >
             Emails

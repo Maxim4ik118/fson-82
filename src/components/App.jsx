@@ -8,6 +8,7 @@ import Modal from './Modal/Modal';
 
 // import booksData from '../books.json';
 import { fetchPostDetails, fetchPosts } from 'services/api';
+import PostsList from './PostsList/PostsList';
 
 // const books = booksData.books;
 
@@ -113,21 +114,10 @@ export const App = () => {
           visible={true}
         />
       )}
-      {posts.length > 0 &&
-        posts.map(post => {
-          return (
-            <button
-              className="post"
-              onClick={() => onSelectPostId(post.id)}
-              type="button"
-              key={post.id}
-            >
-              <strong>Id: {post.id}</strong>
-              <h4>{post.title}</h4>
-              <p>{post.body}</p>
-            </button>
-          );
-        })}
+      <PostsList 
+        posts={posts} 
+        onSelectPostId={onSelectPostId} 
+      />
     </div>
   );
 };
