@@ -12,15 +12,11 @@ import { StyledModal, StyledOverlay } from './styled';
   3. Щоб робити Відео та Аудіо плеєри.
   4. Коли нам потрібно зберігати змінну в компоненті, з відсутньою реактивністю.
 
-  x400Re231#23 -> ['Earth', "Jupiter"]
-  x400Re231#24 -> ""
-  x400Re231#25 -> ['Earth', "Jupiter"]
 */
 
 const Modal = ({ visibleData, onCloseModal }) => {
   const [dataType, setDataType] = useState('emails'); // "emails" | "users"
-  // const { showNotificationMessage, setShowNotificationMessage } =
-  //   useContext(PostsContext);
+
 
   const handleOverlayClick = event => {
     if (event.currentTarget === event.target) {

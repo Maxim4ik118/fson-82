@@ -1,123 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { MutatingDots } from 'react-loader-spinner';
-import { toast } from 'react-toastify';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 
-// import BookForm from './BookForm/BookForm';
-// import BookList from './BookList/BookList';
-import Modal from './Modal/Modal';
+import HomePage from 'pages/HomePage';
+import SearchPostsPage from 'pages/SearchPostsPage';
 
-// import booksData from '../books.json';
-import { fetchPostDetails, fetchPosts } from 'services/api';
-import PostsList from './PostsList/PostsList';
+import { StyledNavLink } from './App.styled';
+import NotFound from 'pages/NotFound';
+import PostDetailsPage from 'pages/PostDetailsPage';
+// import css from './App.module.css';
 
-// const books = booksData.books;
-
-const toastConfig = {
-  position: 'top-center',
-  autoClose: 5000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: 'dark',
-};
+/*
+Робота з маршрутеризацією:
+1. Змінити адресний рядок браузера використовуючи компоненти NavLink або Link.
+2. Підготувати маршрути(Route) з відповідними шляхами, за якими Роут буде спостерігати 
+   і рендерити той чи інший компонент. 
+ 
+*/
 
 export const App = () => {
-  const [modal, setModal] = useState({ isOpen: false, visibleData: null });
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedPostId, setSelectedPostId] = useState(null);
-
-  const onOpenModal = data => {
-    setModal({
-      isOpen: true,
-      visibleData: data,
-    });
-  };
-
-  const onCloseModal = () => {
-    setModal({
-      isOpen: false,
-      visibleData: null,
-    });
-  };
-
-  const onSelectPostId = postId => {
-    setSelectedPostId(postId);
-  };
-
-  useEffect(() => {
-    const fetchPostsData = async () => {
-      try {
-        setIsLoading(true);
-
-        const posts = await fetchPosts();
-
-        setPosts(posts);
-        toast.success('Your posts were successfully fetched!', toastConfig);
-      } catch (error) {
-        setError(error.message);
-        toast.error(error.message, toastConfig);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPostsData();
-  }, []);
-
-  useEffect(() => {
-    if (!selectedPostId) return;
-
-    const fetchPostData = async postId => {
-      try {
-        setIsLoading(true);
-
-        const postDetails = await fetchPostDetails(postId);
-
-        onOpenModal(postDetails);
-        toast.success('Post details were successfully fetched!', toastConfig);
-      } catch (error) {
-        setError(error.message);
-        toast.error(error.message, toastConfig);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPostData(selectedPostId);
-  }, [selectedPostId]);
 
   return (
     <div>
-      <h1>Мій олюблений Реакт😂</h1>
-      {modal.isOpen && (
-        <Modal onCloseModal={onCloseModal} visibleData={modal.visibleData} />
-      )}
-      {error !== null && (
-        <p className="c-error">
-          Oops, some error occured. Please, try again later. Error: {error}
-        </p>
-      )}
-      {isLoading && (
-        <MutatingDots
-          height="100"
-          width="100"
-          color="#5800a5"
-          secondaryColor="#e08e00"
-          radius="12.5"
-          ariaLabel="mutating-dots-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-        />
-      )}
-      <PostsList 
-        posts={posts} 
-        onSelectPostId={onSelectPostId} 
-      />
+      <header>
+        <nav>
+          <StyledNavLink to="/">Home</StyledNavLink>
+          <StyledNavLink to="/search-posts">Search Posts</StyledNavLink>
+          {/* <StyledNavLink
+            to="/contact-us"
+            // className={({ isActive }) => (isActive ? css.activeNavLink : '')}
+          >
+            Contact Us
+          </StyledNavLink> */}
+        </nav>
+      </header>
+      <main>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/search-posts" element={<SearchPostsPage />} />
+          <Route path="/posts/:postId" element={<PostDetailsPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
     </div>
   );
 };
