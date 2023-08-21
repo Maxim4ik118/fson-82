@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
 
 import { App } from 'components/App';
 
@@ -29,6 +29,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         pauseOnHover
         theme="dark"
       />
-    </BrowserRouter>
+    </BrowserRouter>{' '}
   </Provider>
 );

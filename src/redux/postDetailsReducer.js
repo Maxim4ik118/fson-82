@@ -2,53 +2,31 @@ const initialState = {
   postDetails: null,
   isLoading: false,
   error: null,
-  //   toglerTest: false,
+  posts: [],
 };
 
 export const postDetailsReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'postDetails/setIsLoading': {
-      return {
-        ...state,
-        isLoading: action.payload,
-        // toglerTest: !state.toglerTest
-      };
+      return { ...state, isLoading: action.payload };
     }
-    case 'postDetails/setPostDetails': {
-      return {
-        ...state,
-        postDetails: action.payload,
-      };
+    case 'postDetails/setPostData': {
+      return { ...state, postDetails: action.payload };
     }
     case 'postDetails/setError': {
+      return { ...state, error: action.payload };
+    }
+    case 'posts/addPost': {
+      return { ...state, posts: [...state.posts, action.payload] };
+    }
+    case 'posts/deletePost': {
       return {
         ...state,
-        error: action.payload,
+        posts: state.posts.filter(post => post.id !== action.payload),
       };
     }
+
     default:
       return state;
   }
 };
-
-export const setIsLoading = payload => {
-  return {
-    type: 'postDetails/setIsLoading',
-    payload,
-  };
-};
-export const setPostDetails = payload => {
-  return {
-    type: 'postDetails/setPostDetails',
-    payload,
-  };
-};
-export const setError = payload => {
-  return {
-    type: 'postDetails/setError',
-    payload,
-  };
-};
-// { type: "postDetails/setIsLoading", payload: true | false }
-// { type: "postDetails/setPostDetails", payload: {...} }
-// { type: "postDetails/setError", payload: "Some error text" }

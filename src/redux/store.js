@@ -4,7 +4,7 @@ import { devToolsEnhancer } from '@redux-devtools/extension';
 import { postDetailsReducer } from './postDetailsReducer';
 
 const rootReducer = combineReducers({
-  postDetails: postDetailsReducer
+  postDetails: postDetailsReducer,
 });
 
 const enhancer = devToolsEnhancer();
