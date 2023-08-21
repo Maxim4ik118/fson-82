@@ -16,9 +16,11 @@ export const postDetailsReducer = (state = initialState, action) => {
     case 'postDetails/setError': {
       return { ...state, error: action.payload };
     }
+    // dispatch({ type: 'posts/addPost', payload: { id: "1", title: "hello", body: "Here goes some text" } })
     case 'posts/addPost': {
       return { ...state, posts: [...state.posts, action.payload] };
     }
+    // dispatch({ type: 'posts/deletePost', payload: "1" })
     case 'posts/deletePost': {
       return {
         ...state,
