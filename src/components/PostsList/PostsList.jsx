@@ -2,12 +2,11 @@ import PostListItem from 'components/PostListItem/PostListItem';
 import React from 'react';
 
 const PostsList = ({ posts }) => {
+  const showPosts = Array.isArray(posts) && posts.length > 0;
   return (
     <div>
-      {posts.length > 0 &&
-        posts.map(post => (
-          <PostListItem key={post.id} post={post}  />
-        ))}
+      {showPosts &&
+        posts.map(post => <PostListItem key={post.id} post={post} />)}
     </div>
   );
 };

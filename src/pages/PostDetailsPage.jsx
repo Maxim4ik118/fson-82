@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MutatingDots } from 'react-loader-spinner';
-import { useParams } from 'react-router-dom';
+import { Link, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { fetchPostDetails } from 'services/api';
+import CommentsPage from './CommentsPage';
 
 const PostDetailsPage = () => {
   const { postId } = useParams();
   const [postData, setPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const location = useLocation();
+  console.log('location: ', location);
+  const backLinkHref = useRef(location.state?.from ?? "/")
 
   useEffect(() => {
     if (!postId) return;
@@ -51,11 +56,19 @@ const PostDetailsPage = () => {
       )}
       {postData !== null && (
         <div>
+          <Link to={backLinkHref.current}>{"<--"} Go Back</Link>
           <p>Id: {postData.id}</p>
           <h2>Title: {postData.title}</h2>
           <p>Body: {postData.body}</p>
         </div>
       )}
+      <div>
+        <Link to="comments">Comments</Link>
+      </div>
+      <Routes>
+        <Route path="comments" element={<CommentsPage />}/>
+      </Routes>
+      {/* CommentsPage */}
     </div>
   );
 };

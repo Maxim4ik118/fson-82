@@ -1,10 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const PostListItem = ({ post }) => {
+  const location = useLocation();
+
   return (
     <li>
-      <Link className="post" to={`/posts/${post.id}`}>
+      <Link
+        state={{ from: location }}
+        className="post"
+        to={`/posts/${post.id}`}
+      >
         <strong>Id: {post.id}</strong>
         <h4>{post.title}</h4>
         <p>{post.body}</p>

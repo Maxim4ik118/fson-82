@@ -1,7 +1,10 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 const CommentsPage = () => {
-  return <div>CommentsPage</div>;
+  const { postId } = useParams();
+
+  return <div>CommentsPage Comments for post with id: {postId}</div>;
 };
 
 export default CommentsPage;
