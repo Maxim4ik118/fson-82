@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useRef } from 'react';
 import { MutatingDots } from 'react-loader-spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -10,11 +10,15 @@ import {
   useParams,
 } from 'react-router-dom';
 import { toast } from 'react-toastify';
-// import {
-//   setError,
-//   setIsLoading,
-//   setPostDetails,
-// } from 'redux/postDetailsReducer';
+
+import {
+  selectPostDetails,
+  selectPostDetailsError,
+  selectPostDetailsIsLoading,
+  setError,
+  setIsLoading,
+  setPostData,
+} from 'redux/postDetailsReducer';
 
 import { fetchPostDetails } from 'services/api';
 
@@ -50,9 +54,9 @@ const toastConfig = {
 //       і доставляє його до редьюсеру.
 
 const PostDetails = () => {
-  const postDetails = useSelector(state => state.postDetails.postDetails);
-  const isLoading = useSelector(state => state.postDetails.isLoading);
-  const error = useSelector(state => state.postDetails.error);
+  const postDetails = useSelector(selectPostDetails);
+  const isLoading = useSelector(selectPostDetailsIsLoading);
+  const error = useSelector(selectPostDetailsError);
   const dispath = useDispatch();
 
   const { postId } = useParams();
@@ -64,31 +68,19 @@ const PostDetails = () => {
 
     const fetchPostData = async () => {
       try {
-        dispath({
-          type: 'postDetails/setIsLoading',
-          payload: true,
-        });
+        dispath(setIsLoading(true));
 
         const postData = await fetchPostDetails(postId);
 
-        dispath({
-          type: 'postDetails/setPostData',
-          payload: postData,
-        });
+        dispath(setPostData(postData));
 
         toast.success('Post details were successfully fetched!', toastConfig);
       } catch (error) {
-        dispath({
-          type: 'postDetails/setError',
-          payload: error.message,
-        });
+        dispath(setError(error.message));
 
         toast.error(error.message, toastConfig);
       } finally {
-        dispath({
-          type: 'postDetails/setIsLoading',
-          payload: false,
-        });
+        dispath(setIsLoading(false));
       }
     };
 
