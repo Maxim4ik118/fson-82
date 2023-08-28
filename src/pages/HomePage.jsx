@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MutatingDots } from 'react-loader-spinner';
 import { Link } from 'react-router-dom';
 
 import useGetPosts from 'hooks/useGetPosts';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectHomePosts,
+  selectHomePostsError,
+  selectHomePostsIsLoading,
+} from 'redux/homePosts';
+import { requestHomePosts } from 'redux/operations';
 
 const HomePage = () => {
-  const { posts, isLoading, error } = useGetPosts({ someData: 'Privet' });
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectHomePostsIsLoading);
+  const posts = useSelector(selectHomePosts);
+  const error = useSelector(selectHomePostsError);
+
+  useEffect(() => {
+    dispatch(requestHomePosts());
+  }, [dispatch]);
 
   return (
     <div>

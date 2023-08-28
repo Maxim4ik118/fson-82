@@ -1,4 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+const JSON_PLACEHOLDER_BASE_URL = 'https://jsonplaceholder.typicode.com';
+
+export const requestPosts = createAsyncThunk(
+  'postDetails/requestPosts',
+  async (postId, thunkApi) => {
+    try {
+      const { data } = await axios.get(
+        `${JSON_PLACEHOLDER_BASE_URL}/posts/${postId}`
+      );
+
+      return data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+  {
+    condition: (postId, thunkApi) => {
+      const state = thunkApi.getState();
+      const isLoading = state.postDetails.isLoading;
+
+      if (postId === null || isLoading === true) return false;
+    },
+  }
+);
 
 const initialState = {
   postDetails: null,
@@ -9,17 +35,8 @@ const initialState = {
 
 const postDetailsSlice = createSlice({
   name: 'postDetails',
-  initialState: initialState,
+  initialState,
   reducers: {
-    setIsLoading(state, { payload }) {
-      state.isLoading = payload; // return { ...state, isLoading: action.payload };
-    },
-    setPostData(state, action) {
-      state.postDetails = action.payload;
-    },
-    setError(state, action) {
-      state.error = action.payload;
-    },
     addPost(state, action) {
       state.posts = [...state.posts, action.payload];
       // state.posts.push(action.payload);
@@ -30,11 +47,24 @@ const postDetailsSlice = createSlice({
       //  state.posts.splice(deletedPostIndex, 1);
     },
   },
+  extraReducers: builder =>
+    builder
+      .addCase(requestPosts.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(requestPosts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.postDetails = action.payload;
+      })
+      .addCase(requestPosts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      }),
 });
 
 // Генератори екшенів
-export const { setIsLoading, setPostData, setError, addPost, deletePost } =
-  postDetailsSlice.actions;
+export const { addPost, deletePost } = postDetailsSlice.actions;
 
 // Селектори
 export const selectPostDetails = state => state.postDetails.postDetails;
