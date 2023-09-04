@@ -30,3 +30,25 @@ code {
   background-color: transparent;
   cursor: pointer;
 }
+.nav {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.nav :is(a, button) {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  padding: 15px;
+  background-color: antiquewhite;
+  transition: all .3s;
+}
+
+.nav :is(a.active) {
+  text-decoration: none;
+  color:  antiquewhite;
+  display: flex;
+  padding: 15px;
+  background-color: rgb(50, 0, 230);
+}

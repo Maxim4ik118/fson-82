@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { MutatingDots } from 'react-loader-spinner';
 import { Link } from 'react-router-dom';
 
-import useGetPosts from 'hooks/useGetPosts';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectHomePosts,
