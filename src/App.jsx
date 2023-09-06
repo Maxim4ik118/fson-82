@@ -16,6 +16,7 @@ import {
   selectUserAuthentication,
   selectUserData,
 } from 'redux/authReducer';
+import { Loader } from 'components/Loader/Loader';
 
 const NotFoundPage = lazy(() => import('pages/NotFound'));
 
@@ -29,8 +30,8 @@ export const App = () => {
   };
 
   useEffect(() => {
-    dispatch(refreshUser())
-  }, [dispatch])
+    dispatch(refreshUser());
+  }, [dispatch]);
 
   return (
     <div>
@@ -54,21 +55,7 @@ export const App = () => {
         </nav>
       </header>
       <main>
-        <Suspense
-          fallback={
-            <MutatingDots
-              height="100"
-              width="100"
-              color="#5800a5"
-              secondaryColor="#e08e00"
-              radius="12.5"
-              ariaLabel="mutating-dots-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-            />
-          }
-        >
+        <Suspense fallback={<Loader />}>
           <Routes>
             {appRoutes.map(({ path, element }) => (
               <Route key={path} path={path} element={element} />

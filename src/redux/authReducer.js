@@ -70,6 +70,14 @@ export const refreshUser = createAsyncThunk(
     } catch (error) {
       return thunkApi.rejectWithValue(error.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState();
+      const token = state.auth.token;
+
+      if (!token) return false;
+    },
   }
 );
 
@@ -87,67 +95,47 @@ const authSlice = createSlice({
   extraReducers: builder =>
     builder
       // --------------- REGISTER -----------------
-      .addCase(registerUser.pending, state => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.authenticated = true;
         state.userData = action.payload.user;
         state.token = action.payload.token;
       })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-
       // --------------- LOGIN -----------------
-      .addCase(loginUser.pending, state => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.authenticated = true;
         state.userData = action.payload.user;
         state.token = action.payload.token;
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
       // --------------- LOG OUT -----------------
-
-      .addCase(logOutUser.pending, state => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(logOutUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.authenticated = false;
         state.userData = null;
         state.token = null;
       })
-      .addCase(logOutUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-       // --------------- REFRESH USER -----------------
-
-       .addCase(refreshUser.pending, state => {
-        state.isLoading = true;
-        state.error = null;
-      })
+      // --------------- REFRESH USER -----------------
       .addCase(refreshUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.authenticated = true;
         state.userData = action.payload;
       })
-      .addCase(refreshUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
+      
+      .addMatcher(
+        action => action.type.endsWith('/pending'),
+        state => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        action => action.type.endsWith('/rejected'),
+        (state, action) => {
+          state.isLoading = false;
+          state.error = action.payload;
+        }
+      )
       ,
 });
 

@@ -9,6 +9,7 @@ import {
   selectHomePostsIsLoading,
 } from 'redux/homePosts';
 import { requestHomePosts } from 'redux/operations';
+import { Loader } from 'components/Loader/Loader';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -28,19 +29,7 @@ const HomePage = () => {
           Oops, some error occured. Please, try again later. Error: {error}
         </p>
       )}
-      {isLoading && (
-        <MutatingDots
-          height="100"
-          width="100"
-          color="#5800a5"
-          secondaryColor="#e08e00"
-          radius="12.5"
-          ariaLabel="mutating-dots-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-        />
-      )}
+      {isLoading && <Loader />}
 
       {posts.length > 0 &&
         posts.map(post => {
